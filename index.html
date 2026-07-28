@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Console de Dispatch — Police / Secours</title>
+<title>Console de Dispatch — Services d'Urgence</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -17,10 +17,8 @@
     --text: #e7eaf2;
     --text-dim: #8891a7;
     --accent: #3b82f6;
-    --accent-dim: #1e3a63;
     --teal: #34d1b0;
     --red: #ff5c5c;
-    --amber: #f5b942;
     --radius: 10px;
   }
   *{box-sizing:border-box;}
@@ -37,9 +35,8 @@
     justify-content:center;
     padding:40px 16px;
   }
-  .wrap{width:100%; max-width:760px;}
+  .wrap{width:100%; max-width:780px;}
 
-  /* header */
   .console-head{
     display:flex; align-items:center; justify-content:space-between;
     padding-bottom:14px; margin-bottom:6px;
@@ -107,17 +104,16 @@
   }
   #webhook{font-family:'JetBrains Mono', monospace; font-size:0.8rem;}
 
-  .row-split{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
   .row-3{display:grid; grid-template-columns:1.3fr 1fr 1fr; gap:14px;}
-  @media (max-width:560px){ .row-split, .row-3{grid-template-columns:1fr;} }
+  @media (max-width:560px){ .row-3{grid-template-columns:1fr;} }
 
   /* service selector */
-  .service-grid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px;}
+  .service-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px;}
   @media (max-width:560px){ .service-grid{grid-template-columns:repeat(3,1fr);} }
   .service-btn{
     background:var(--bg-grid); border:1px solid var(--line); border-radius:8px;
     padding:10px 6px; cursor:pointer; text-align:center;
-    font-family:'Rajdhani', sans-serif; font-weight:600; font-size:0.78rem;
+    font-family:'Rajdhani', sans-serif; font-weight:600; font-size:0.76rem;
     letter-spacing:0.02em; color:var(--text-dim);
     transition:all .15s ease;
   }
@@ -129,16 +125,29 @@
     box-shadow:0 0 0 1px var(--sv-color) inset;
   }
 
-  .priority-toggle{display:flex; gap:8px;}
-  .prio-btn{
-    flex:1; background:var(--bg-grid); border:1px solid var(--line); border-radius:7px;
-    padding:9px; cursor:pointer; text-align:center;
-    font-family:'Rajdhani', sans-serif; font-weight:600; font-size:0.82rem;
-    letter-spacing:0.03em; text-transform:uppercase; color:var(--text-dim);
+  /* urgency scale */
+  .urgency-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:6px;}
+  @media (max-width:560px){ .urgency-grid{grid-template-columns:repeat(3,1fr);} }
+  .urgency-btn{
+    background:var(--bg-grid); border:1px solid var(--line); border-radius:7px;
+    padding:8px 4px; cursor:pointer; text-align:center;
     transition:all .15s ease;
   }
-  .prio-btn.active[data-prio="normal"]{ color:var(--teal); border-color:var(--teal); background:rgba(52,209,176,0.08);}
-  .prio-btn.active[data-prio="urgent"]{ color:var(--red); border-color:var(--red); background:rgba(255,92,92,0.08);}
+  .urgency-btn .lvl{
+    font-family:'JetBrains Mono', monospace; font-size:0.62rem;
+    color:var(--text-dim); letter-spacing:0.05em; display:block;
+  }
+  .urgency-btn .lbl{
+    font-family:'Rajdhani', sans-serif; font-weight:600; font-size:0.78rem;
+    color:var(--text); display:block; margin-top:1px;
+  }
+  .urgency-btn:hover{border-color:#3a445c;}
+  .urgency-btn.active{
+    border-color:var(--u-color);
+    background:color-mix(in srgb, var(--u-color) 18%, var(--bg-grid));
+    box-shadow:0 0 0 1px var(--u-color) inset;
+  }
+  .urgency-btn.active .lvl{color:var(--u-color);}
 
   .actions{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:4px;}
   button{
@@ -160,7 +169,6 @@
   #sendBtn:hover{filter:brightness(1.12);}
   #sendBtn:disabled{opacity:0.55; cursor:not-allowed; filter:none;}
 
-  /* discord-style preview */
   .preview-label{
     font-family:'JetBrains Mono', monospace; font-size:0.68rem;
     letter-spacing:0.1em; text-transform:uppercase; color:var(--text-dim);
@@ -221,9 +229,12 @@
       <div class="eyebrow">Service émetteur</div>
       <div class="service-grid" id="serviceGrid">
         <div class="service-btn active" data-service="LSPD" data-color="3b82f6" style="--sv-color:#3b82f6"><span class="ico">🚓</span>Police</div>
+        <div class="service-btn" data-service="PM" data-color="06b6d4" style="--sv-color:#06b6d4"><span class="ico">👮</span>Police Mun.</div>
+        <div class="service-btn" data-service="GEND" data-color="6366f1" style="--sv-color:#6366f1"><span class="ico">🎖️</span>Gendarmerie</div>
+        <div class="service-btn" data-service="DOUANE" data-color="22c55e" style="--sv-color:#22c55e"><span class="ico">🛃</span>Douane</div>
         <div class="service-btn" data-service="EMS" data-color="ff5c5c" style="--sv-color:#ff5c5c"><span class="ico">🚑</span>Secours</div>
+        <div class="service-btn" data-service="BSPP" data-color="f97316" style="--sv-color:#f97316"><span class="ico">🚒</span>BSPP</div>
         <div class="service-btn" data-service="SAMS" data-color="f5b942" style="--sv-color:#f5b942"><span class="ico">🏛️</span>Mairie</div>
-        <div class="service-btn" data-service="MECANO" data-color="ff9640" style="--sv-color:#ff9640"><span class="ico">🔧</span>Dépann.</div>
         <div class="service-btn" data-service="GENERAL" data-color="5865f2" style="--sv-color:#5865f2"><span class="ico">📡</span>Général</div>
       </div>
     </div>
@@ -258,10 +269,14 @@
     </div>
 
     <div class="field">
-      <div class="eyebrow">Priorité</div>
-      <div class="priority-toggle">
-        <div class="prio-btn active" data-prio="normal">Normal</div>
-        <div class="prio-btn" data-prio="urgent">Urgent — Code 3</div>
+      <div class="eyebrow">Niveau d'urgence</div>
+      <div class="urgency-grid" id="urgencyGrid">
+        <div class="urgency-btn active" data-level="1" data-color="34d1b0" style="--u-color:#34d1b0"><span class="lvl">NIV. 1</span><span class="lbl">Info</span></div>
+        <div class="urgency-btn" data-level="2" data-color="60a5fa" style="--u-color:#60a5fa"><span class="lvl">NIV. 2</span><span class="lbl">Normal</span></div>
+        <div class="urgency-btn" data-level="3" data-color="f5b942" style="--u-color:#f5b942"><span class="lvl">NIV. 3</span><span class="lbl">Attention</span></div>
+        <div class="urgency-btn" data-level="4" data-color="fb923c" style="--u-color:#fb923c"><span class="lvl">NIV. 4</span><span class="lbl">Élevée</span></div>
+        <div class="urgency-btn" data-level="5" data-color="ef4444" style="--u-color:#ef4444"><span class="lvl">NIV. 5</span><span class="lbl">Critique</span></div>
+        <div class="urgency-btn" data-level="6" data-color="dc2626" style="--u-color:#dc2626"><span class="lvl">NIV. 6</span><span class="lbl">Vitale</span></div>
       </div>
     </div>
 
@@ -298,21 +313,50 @@
   const toast = document.getElementById('toast');
   const toastMsg = document.getElementById('toastMsg');
   const serviceBtns = document.querySelectorAll('.service-btn');
-  const prioBtns = document.querySelectorAll('.prio-btn');
+  const urgencyBtns = document.querySelectorAll('.urgency-btn');
   const statusDot = document.getElementById('statusDot');
   const statusTag = document.getElementById('statusTag');
   const freqLine = document.getElementById('freqLine');
   const prioLabel = document.getElementById('prioLabel');
 
-  const serviceNames = { LSPD: 'Police (LSPD)', EMS: 'Secours (EMS)', SAMS: 'Mairie', MECANO: 'Dépannage', GENERAL: 'Général' };
+  const serviceNames = {
+    LSPD: 'Police (LSPD)',
+    PM: 'Police Municipale',
+    GEND: 'Gendarmerie',
+    DOUANE: 'Douane',
+    EMS: 'Secours (EMS)',
+    BSPP: 'BSPP',
+    SAMS: 'prefecture de paris 75',
+    GENERAL: 'Général'
+  };
+
+  const urgencyMeta = {
+    1: { label: 'Info',    code: 'NIV. 1', prefix: '' },
+    2: { label: 'Normal',  code: 'NIV. 2', prefix: '' },
+    3: { label: 'Attention', code: 'NIV. 3', prefix: '⚠️ ' },
+    4: { label: 'Élevée',  code: 'NIV. 4', prefix: '⚠️ ÉLEVÉE — ' },
+    5: { label: 'Critique', code: 'NIV. 5', prefix: '🔴 CRITIQUE — ' },
+    6: { label: 'Vitale',  code: 'NIV. 6', prefix: '🔴 URGENCE VITALE — ' }
+  };
 
   let selectedColor = '3b82f6';
   let selectedService = 'LSPD';
-  let priority = 'normal';
+  let urgencyLevel = 1;
+  let urgencyColor = '34d1b0';
 
   function setAccent(hex){
     document.documentElement.style.setProperty('--accent', '#' + hex);
     previewBar.style.background = '#' + hex;
+  }
+
+  function updateStatus(){
+    const meta = urgencyMeta[urgencyLevel];
+    statusDot.style.background = '#' + urgencyColor;
+    statusDot.style.boxShadow = '0 0 8px #' + urgencyColor;
+    statusTag.style.color = '#' + urgencyColor;
+    statusTag.style.borderColor = 'color-mix(in srgb, #' + urgencyColor + ' 40%, transparent)';
+    statusTag.style.background = 'color-mix(in srgb, #' + urgencyColor + ' 10%, transparent)';
+    statusTag.textContent = urgencyLevel >= 5 ? 'Priorité critique' : (urgencyLevel >= 3 ? 'Sous surveillance' : 'Canal libre');
   }
 
   serviceBtns.forEach(btn => {
@@ -327,32 +371,19 @@
     });
   });
 
-  prioBtns.forEach(btn => {
+  urgencyBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      prioBtns.forEach(b => b.classList.remove('active'));
+      urgencyBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      priority = btn.dataset.prio;
-      if(priority === 'urgent'){
-        statusDot.style.background = 'var(--red)';
-        statusDot.style.boxShadow = '0 0 8px var(--red)';
-        statusTag.style.color = 'var(--red)';
-        statusTag.style.borderColor = 'rgba(255,92,92,0.4)';
-        statusTag.style.background = 'rgba(255,92,92,0.08)';
-        statusTag.textContent = 'Priorité haute';
-      } else {
-        statusDot.style.background = 'var(--teal)';
-        statusDot.style.boxShadow = '0 0 8px var(--teal)';
-        statusTag.style.color = 'var(--teal)';
-        statusTag.style.borderColor = 'rgba(52,209,176,0.35)';
-        statusTag.style.background = 'rgba(52,209,176,0.08)';
-        statusTag.textContent = 'Canal libre';
-      }
+      urgencyLevel = parseInt(btn.dataset.level, 10);
+      urgencyColor = btn.dataset.color;
+      updateStatus();
       renderPreview();
     });
   });
 
   messageInput.addEventListener('input', () => {
-    charCount.textContent = `${messageInput.value.length} / 20000000`;
+    charCount.textContent = `${messageInput.value.length} / 2000`;
   });
 
   function escapeHtml(str){
@@ -365,14 +396,15 @@
     const title = titleInput.value.trim();
     const unit = unitInput.value.trim();
     const msg = messageInput.value.trim();
+    const meta = urgencyMeta[urgencyLevel];
     if(!title && !msg){
       previewBody.innerHTML = '<div class="discord-placeholder">Votre message radio apparaîtra ici...</div>';
       prioLabel.textContent = '';
       return;
     }
     previewBody.style.textAlign = alignmentSelect.value;
-    const finalTitle = (priority === 'urgent' ? '🔴 URGENT — ' : '') + title;
-    prioLabel.textContent = priority === 'urgent' ? 'CODE 3' : '';
+    const finalTitle = meta.prefix + title;
+    prioLabel.textContent = meta.code + ' · ' + meta.label;
     previewBody.innerHTML = `
       <div class="discord-author">${serviceNames[selectedService]}${unit ? ' · ' + escapeHtml(unit) : ''}</div>
       ${title ? `<div class="discord-title">${escapeHtml(finalTitle)}</div>` : ''}
@@ -383,7 +415,7 @@
   function showToast(message, ok){
     toast.className = 'toast show ' + (ok ? 'ok' : 'err');
     toastMsg.textContent = message;
-    setTimeout(() => { toast.className = 'toast ' + (ok ? 'ok' : 'err'); }, 3200);
+    setTimeout(() => { toast.className = 'toast ' + (ok ? 'ok' : 'err'); }, 320000000000);
   }
 
   document.getElementById('previewBtn').addEventListener('click', renderPreview);
@@ -412,12 +444,14 @@
     sendBtn.disabled = true;
     sendBtn.textContent = 'Envoi...';
 
-    const finalTitle = (priority === 'urgent' ? '🔴 URGENT — ' : '') + title;
+    const meta = urgencyMeta[urgencyLevel];
+    const finalTitle = meta.prefix + title;
     const embed = {
       title: finalTitle,
       description: msg,
       color: parseInt(selectedColor, 16),
-      author: { name: serviceNames[selectedService] + (unit ? ' · ' + unit : '') }
+      author: { name: serviceNames[selectedService] + (unit ? ' · ' + unit : '') },
+      footer: { text: `${meta.code} · ${meta.label}` }
     };
     const payload = { embeds: [embed] };
 
@@ -445,6 +479,7 @@
   });
 
   setAccent(selectedColor);
+  updateStatus();
 </script>
 </body>
 </html>
